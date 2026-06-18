@@ -1,62 +1,74 @@
 #!/usr/bin/env node
-// Post-build step: emit a static index.html into dist/client so the app can be
-// served as a plain SPA on static hosts like Cloudflare Pages (no SSR runtime).
-//
-// The TanStack Start build emits hashed client bundles into dist/client/assets
-// but never produces an index.html (it expects an SSR worker to render the
-// shell). Since this site has no server-side data, we render a shell that
-// hydrates client-side. SEO meta tags are inlined here so crawlers see them
-// even before JS runs.
-import { readdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+/**
+ * Post-build step: prerender the homepage to static HTML so the app can be
+ * deployed as a plain static site (e.g. Cloudflare Pages) with no SSR runtime.
+ *
+ * TanStack Start's nitro build emits a Cloudflare Worker at
+ * dist/server/index.mjs. Even though it targets cloudflare-module, the
+ * generated fetch handler runs fine under plain Node as long as we pass a
+ * stub `env`/`ctx`. We invoke it once per route, capture the rendered HTML,
+ * and write it into dist/client/<route>/index.html so the result is a
+ * fully static site.
+ *
+ * Add more routes to PRERENDER_ROUTES as the site grows.
+ */
+import { mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { pathToFileURL } from "node:url";
 
+const PRERENDER_ROUTES = ["/"];
+
+const serverEntry = "dist/server/index.mjs";
 const clientDir = "dist/client";
-const assetsDir = join(clientDir, "assets");
 
-if (!existsSync(assetsDir)) {
-  console.error(`[static-html] ${assetsDir} not found — did the build run?`);
+if (!existsSync(serverEntry)) {
+  console.error(`[prerender] missing ${serverEntry} — run \`vite build\` first.`);
   process.exit(1);
 }
 
-const files = readdirSync(assetsDir);
-const entryJs = files.find((f) => /^index-.*\.js$/.test(f));
-const styleCss = files.find((f) => /^styles-.*\.css$/.test(f));
-
-if (!entryJs) {
-  console.error("[static-html] could not find entry JS (index-*.js) in", assetsDir);
+const mod = await import(pathToFileURL(serverEntry).href);
+const handler = mod.default;
+if (!handler?.fetch) {
+  console.error("[prerender] server bundle has no default.fetch export");
   process.exit(1);
 }
 
-const cssTag = styleCss
-  ? `<link rel="stylesheet" href="/assets/${styleCss}">`
-  : "";
+// Minimal Cloudflare-style env/ctx stubs. The Lovable runtime expects an
+// `ASSETS` binding for static asset passthrough; we short-circuit it.
+const env = {
+  ASSETS: { fetch: async () => new Response("", { status: 404 }) },
+};
+const ctx = { waitUntil: () => {}, passThroughOnException: () => {} };
 
-const html = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MD Al Amin — Founder & CEO, 10 Cent Agency</title>
-<meta name="description" content="Digital business card for MD Al Amin, Founder & CEO of 10 Cent Agency. Save contact, message on WhatsApp, and connect.">
-<meta name="theme-color" content="#00346D">
-<meta property="og:title" content="MD Al Amin — 10 Cent Agency">
-<meta property="og:description" content="Founder & CEO of 10 Cent Agency. Tap to save contact or message on WhatsApp.">
-<meta property="og:type" content="profile">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
-${cssTag}
-<script type="module" crossorigin src="/assets/${entryJs}"></script>
-</head>
-<body>
-<div id="root"></div>
-</body>
-</html>
-`;
+let ok = 0;
+for (const route of PRERENDER_ROUTES) {
+  const url = new URL(route, "http://localhost");
+  const res = await handler.fetch(new Request(url), env, ctx);
+  if (res.status >= 400) {
+    console.error(`[prerender] ${route} → ${res.status}`);
+    process.exit(1);
+  }
+  const html = await res.text();
+  const outPath =
+    route === "/"
+      ? join(clientDir, "index.html")
+      : join(clientDir, route.replace(/^\//, "").replace(/\/$/, ""), "index.html");
+  mkdirSync(dirname(outPath), { recursive: true });
+  writeFileSync(outPath, html);
+  console.log(`[prerender] ${route} → ${outPath} (${html.length} bytes)`);
+  ok++;
+}
 
-writeFileSync(join(clientDir, "index.html"), html);
-console.log(`[static-html] wrote ${join(clientDir, "index.html")} (entry: ${entryJs}, css: ${styleCss ?? "none"})`);
+// Cloudflare Pages SPA fallback: serve the homepage for unknown URLs so
+// client-side routes (and the 404 page from TanStack Router) still work.
+writeFileSync(
+  join(clientDir, "404.html"),
+  // Reuse the homepage HTML; the client router will render the right view.
+  await (async () => {
+    const res = await handler.fetch(new Request("http://localhost/"), env, ctx);
+    return res.text();
+  })(),
+);
+console.log(`[prerender] wrote ${join(clientDir, "404.html")} (SPA fallback)`);
 
-// Also write a SPA fallback for client-side routes on Cloudflare Pages.
-writeFileSync(join(clientDir, "404.html"), html);
-console.log(`[static-html] wrote ${join(clientDir, "404.html")} (SPA fallback)`);
+console.log(`[prerender] done — ${ok} route(s)`);
