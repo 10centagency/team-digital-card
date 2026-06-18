@@ -131,7 +131,7 @@ function Index() {
       <section className="px-6 py-12" style={{ backgroundColor: "#F5F7FA" }}>
         <div className="mx-auto max-w-[480px]">
           <div className="flex flex-col items-center text-center">
-            <div className="fade-up h-20 w-[9rem] rounded-2xl bg-white flex items-center justify-center p-3 border border-border">
+            <div className="fade-up h-20 w-[11rem] rounded-2xl bg-white flex items-center justify-center p-3 border border-border">
               <img src={logoAsset.url} alt="10 Cent Agency" className="h-full w-full object-contain" />
             </div>
             <p className="fade-up delay-1 mt-4 text-[11px] font-semibold tracking-[0.18em]" style={{ color: "#2F85F3" }}>
