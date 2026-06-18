@@ -18,13 +18,25 @@ import { pathToFileURL } from "node:url";
 
 const PRERENDER_ROUTES = ["/"];
 
-const serverEntry = "dist/server/index.mjs";
+const serverDir = "dist/server";
 const clientDir = "dist/client";
 
-if (!existsSync(serverEntry)) {
-  console.error(`[prerender] missing ${serverEntry} — run \`vite build\` first.`);
+// The server entry filename varies by nitro preset / build mode:
+//   - cloudflare-module preset → dist/server/index.mjs
+//   - node preset / vite build  → dist/server/server.js
+// Pick whichever exists.
+const serverCandidates = ["index.mjs", "server.js", "server.mjs", "index.js"];
+const serverEntry = serverCandidates
+  .map((f) => join(serverDir, f))
+  .find((p) => existsSync(p));
+
+if (!serverEntry) {
+  console.error(
+    `[prerender] no server bundle found in ${serverDir} (looked for ${serverCandidates.join(", ")}) — run \`vite build\` first.`,
+  );
   process.exit(1);
 }
+console.log(`[prerender] using server entry ${serverEntry}`);
 
 const mod = await import(pathToFileURL(serverEntry).href);
 const handler = mod.default;
