@@ -78,7 +78,7 @@ function Index() {
               className="w-full flex items-center justify-center gap-2 rounded-2xl px-5 py-4 text-base font-semibold text-white transition active:scale-[0.98]"
               style={{ backgroundColor: "#2F85F3" }}
             >
-              {Icon.download("h-5 w-5")}
+              {Icon.contact("h-5 w-5")}
               View Contact
             </a>
 
