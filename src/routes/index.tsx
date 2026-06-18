@@ -81,8 +81,26 @@ function Index() {
               onClick={(e) => {
                 if (typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent)) {
                   e.preventDefault();
+                  let fallbackTimer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
+                    window.location.href = "/contact.vcf";
+                  }, 1200);
+                  const clearFallback = () => {
+                    if (fallbackTimer !== null) {
+                      clearTimeout(fallbackTimer);
+                      fallbackTimer = null;
+                    }
+                    window.removeEventListener("pagehide", clearFallback);
+                    window.removeEventListener("blur", clearFallback);
+                    document.removeEventListener("visibilitychange", onVisibility);
+                  };
+                  const onVisibility = () => {
+                    if (document.hidden) clearFallback();
+                  };
+                  window.addEventListener("pagehide", clearFallback);
+                  window.addEventListener("blur", clearFallback);
+                  document.addEventListener("visibilitychange", onVisibility);
                   window.location.href =
-                    "intent:#Intent;action=android.intent.action.INSERT;type=vnd.android.cursor.dir/contact;S.name=MD%20Al%20Amin;S.phone=%2B8801616144114;S.email=rtxalamin1%40gmail.com;S.company=10%20Cent%20Agency;S.job_title=Founder%20%26%20CEO;end";
+                    "intent://contacts/people/#Intent;action=android.intent.action.INSERT;type=vnd.android.cursor.dir/contact;S.name=MD%20Al%20Amin;S.phone=%2B8801616144114;i.phone_type=2;S.email=rtxalamin1%40gmail.com;i.email_type=1;S.company=10%20Cent%20Agency;S.job_title=Founder%20%26%20CEO;end";
                 }
               }}
               className="w-full flex items-center justify-center gap-2 rounded-2xl px-5 py-4 text-base font-semibold text-white transition active:scale-[0.98]"
