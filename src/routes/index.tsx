@@ -1,6 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import founderAsset from "@/assets/founder.jpg.asset.json";
-import logoAsset from "@/assets/logo.svg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -11,28 +9,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Index,
 });
-
-const VCARD = `BEGIN:VCARD
-VERSION:3.0
-FN:MD Al Amin
-ORG:10 Cent Agency
-TITLE:Founder & CEO
-TEL;TYPE=CELL:+8801616144114
-EMAIL:rtxalamin1@gmail.com
-URL:https://www.10centagency.com
-END:VCARD`;
-
-function saveContact() {
-  const blob = new Blob([VCARD], { type: "text/vcard;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "MD_Al_Amin.vcf";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 
 // Icons (inline SVG, no deps)
 const Icon = {
@@ -80,7 +56,7 @@ function Index() {
       <section className="bg-background px-6 pt-12 pb-10">
         <div className="mx-auto max-w-[480px] flex flex-col items-center text-center">
           <div className="fade-up h-32 w-32 rounded-full overflow-hidden ring-4 ring-accent shadow-sm bg-muted">
-            <img src={founderAsset.url} alt="MD Al Amin" className="h-full w-full object-cover" />
+            <img src="/founder.jpg" alt="MD Al Amin" className="h-full w-full object-cover" />
           </div>
 
           <h1 className="fade-up delay-1 mt-5 text-3xl font-bold tracking-tight" style={{ color: "#00346D" }}>
@@ -95,14 +71,16 @@ function Index() {
           </p>
 
           <div className="fade-up delay-2 mt-7 w-full space-y-3">
-            <button
-              onClick={saveContact}
+            <a
+              href="/contact.vcf"
+              target="_blank"
+              rel="noopener"
               className="w-full flex items-center justify-center gap-2 rounded-2xl px-5 py-4 text-base font-semibold text-white transition active:scale-[0.98]"
               style={{ backgroundColor: "#2F85F3" }}
             >
               {Icon.download("h-5 w-5")}
-              Save contact
-            </button>
+              View Contact
+            </a>
 
             <a
               href="https://wa.me/8801616144114"
@@ -132,7 +110,7 @@ function Index() {
         <div className="mx-auto max-w-[480px]">
           <div className="flex flex-col items-center text-center">
             <div className="fade-up h-20 w-[11rem] rounded-2xl bg-white flex items-center justify-center p-3 border border-border">
-              <img src={logoAsset.url} alt="10 Cent Agency" className="h-full w-full object-contain" />
+              <img src="/logo.svg" alt="10 Cent Agency" className="h-full w-full object-contain" />
             </div>
             <p className="fade-up delay-1 mt-4 text-[11px] font-semibold tracking-[0.18em]" style={{ color: "#2F85F3" }}>
               PROFESSIONAL · AFFORDABLE · UNSTOPPABLE
