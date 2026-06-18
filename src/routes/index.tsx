@@ -164,8 +164,8 @@ function Index() {
             href="https://www.10centagency.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="fade-up delay-3 mt-7 w-full flex items-center justify-center gap-2 rounded-2xl px-5 py-4 text-base font-semibold text-white transition active:scale-[0.98]"
-            style={{ backgroundColor: "#00346D" }}
+            className="fade-up delay-3 mt-7 w-full flex items-center justify-center gap-2 rounded-2xl border-2 px-5 py-4 text-base font-semibold transition active:scale-[0.98]"
+            style={{ borderColor: "#00346D", color: "#00346D", backgroundColor: "transparent" }}
           >
             Explore our website
             {Icon.external("h-4 w-4")}
