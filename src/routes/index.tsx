@@ -44,6 +44,9 @@ const Icon = {
   download: (cls = "h-5 w-5") => (
     <svg viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
   ),
+  contact: (cls = "h-5 w-5") => (
+    <svg viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><circle cx="12" cy="11" r="3"/><path d="M7 18a5 5 0 0 1 10 0"/></svg>
+  ),
   external: (cls = "h-5 w-5") => (
     <svg viewBox="0 0 24 24" className={cls} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
   ),
@@ -78,7 +81,7 @@ function Index() {
               className="w-full flex items-center justify-center gap-2 rounded-2xl px-5 py-4 text-base font-semibold text-white transition active:scale-[0.98]"
               style={{ backgroundColor: "#2F85F3" }}
             >
-              {Icon.download("h-5 w-5")}
+              {Icon.contact("h-5 w-5")}
               View Contact
             </a>
 
