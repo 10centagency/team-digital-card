@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Megaphone, Globe, Bot, Share2, Search, PenTool } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -127,6 +128,7 @@ function Index() {
             <SocialCircle href="https://www.facebook.com/fardin.alamin/" label="Facebook">{Icon.facebook()}</SocialCircle>
             <SocialCircle href="https://www.linkedin.com/in/fardinalamin/" label="LinkedIn">{Icon.linkedin()}</SocialCircle>
             <SocialCircle href="mailto:rtxalamin1@gmail.com" label="Email">{Icon.mail()}</SocialCircle>
+            <SocialCircle href="tel:+8801616144114" label="Phone">{Icon.phone()}</SocialCircle>
           </div>
         </div>
       </section>
@@ -149,6 +151,34 @@ function Index() {
           <p className="fade-up delay-2 mt-6 text-[15px] leading-relaxed text-foreground">
             10 Cent Agency is a full-service digital marketing agency based in Dhaka, helping small &amp; medium businesses, startups, and entrepreneurs grow online — through Facebook &amp; Meta marketing, website development, AI automation, and social media management. Premium quality, SMB-friendly pricing.
           </p>
+
+          {/* Services */}
+          <div className="fade-up delay-2 mt-8">
+            <h2 className="text-lg font-bold" style={{ color: "#00346D" }}>Our Services</h2>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              {[
+                { name: "Facebook & Meta Marketing", icon: <Megaphone size={20} style={{ color: "#2F85F3" }} />, url: "https://www.10centagency.com/services/facebook-meta-marketing" },
+                { name: "Website Development", icon: <Globe size={20} style={{ color: "#2F85F3" }} />, url: "https://www.10centagency.com/services/website-development" },
+                { name: "AI Automation & Chatbot", icon: <Bot size={20} style={{ color: "#2F85F3" }} />, url: "https://www.10centagency.com/services/ai-automation-chatbot" },
+                { name: "Social Media Management", icon: <Share2 size={20} style={{ color: "#2F85F3" }} />, url: "https://www.10centagency.com/services/social-media-management" },
+                { name: "SEO", icon: <Search size={20} style={{ color: "#2F85F3" }} />, url: "https://www.10centagency.com/services/seo" },
+                { name: "Graphic Design", icon: <PenTool size={20} style={{ color: "#2F85F3" }} />, url: "https://www.10centagency.com/services/graphic-design" },
+              ].map((s) => (
+                <a
+                  key={s.name}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center rounded-2xl bg-white border border-border p-4 text-center transition active:scale-[0.98] hover:bg-muted"
+                >
+                  <div className="h-10 w-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#B6D7FF" }}>
+                    {s.icon}
+                  </div>
+                  <span className="mt-2 text-xs font-bold leading-tight" style={{ color: "#2D3748" }}>{s.name}</span>
+                </a>
+              ))}
+            </div>
+          </div>
 
           {/* Contact card */}
           <div className="fade-up delay-2 mt-6 rounded-2xl bg-white border border-border p-5 space-y-4">
