@@ -128,6 +128,7 @@ function Index() {
             <SocialCircle href="https://www.facebook.com/fardin.alamin/" label="Facebook">{Icon.facebook()}</SocialCircle>
             <SocialCircle href="https://www.linkedin.com/in/fardinalamin/" label="LinkedIn">{Icon.linkedin()}</SocialCircle>
             <SocialCircle href="mailto:rtxalamin1@gmail.com" label="Email">{Icon.mail()}</SocialCircle>
+            <SocialCircle href="tel:+8801616144114" label="Phone">{Icon.phone()}</SocialCircle>
           </div>
         </div>
       </section>
