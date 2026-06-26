@@ -18,25 +18,43 @@ import { pathToFileURL } from "node:url";
 
 const PRERENDER_ROUTES = ["/"];
 
-const serverDir = "dist/server";
-const clientDir = "dist/client";
+// Probe server bundle directories in order of likelihood.
+//   dist/_worker.js      → Cloudflare Pages CI (cloudflare-pages preset)
+//   .output/server       → Local development (cloudflare-module / node preset)
+//   dist/server          → Legacy fallback
+const SERVER_DIRS = [
+  { dir: "dist/_worker.js", clientDir: "dist" },
+  { dir: ".output/server", clientDir: ".output/public" },
+  { dir: "dist/server", clientDir: "dist/client" },
+];
 
-// The server entry filename varies by nitro preset / build mode:
-//   - cloudflare-module preset → dist/server/index.mjs
-//   - node preset / vite build  → dist/server/server.js
-// Pick whichever exists.
 const serverCandidates = ["index.mjs", "server.js", "server.mjs", "index.js"];
-const serverEntry = serverCandidates
-  .map((f) => join(serverDir, f))
-  .find((p) => existsSync(p));
+
+let serverDir = null;
+let clientDir = null;
+let serverEntry = null;
+
+for (const candidate of SERVER_DIRS) {
+  const found = serverCandidates
+    .map((f) => join(candidate.dir, f))
+    .find((p) => existsSync(p));
+  if (found) {
+    serverDir = candidate.dir;
+    clientDir = candidate.clientDir;
+    serverEntry = found;
+    break;
+  }
+}
 
 if (!serverEntry) {
+  const looked = SERVER_DIRS.map((d) => `${d.dir}/{${serverCandidates.join(", ")}}`).join("; ");
   console.error(
-    `[prerender] no server bundle found in ${serverDir} (looked for ${serverCandidates.join(", ")}) — run \`vite build\` first.`,
+    `[prerender] no server bundle found (looked in ${looked}) — run \`vite build\` first.`,
   );
   process.exit(1);
 }
 console.log(`[prerender] using server entry ${serverEntry}`);
+console.log(`[prerender] client output dir ${clientDir}`);
 
 const mod = await import(pathToFileURL(serverEntry).href);
 const handler = mod.default;
