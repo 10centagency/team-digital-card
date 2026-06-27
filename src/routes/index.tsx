@@ -57,7 +57,15 @@ function Index() {
   return (
     <main className="min-h-screen bg-background">
       {/* SECTION 1 — HERO */}
-      <section className="bg-background px-6 pt-12 pb-10">
+      <section className="relative bg-background px-6 pt-12 pb-10 overflow-hidden">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: "radial-gradient(circle, #2F85F3 1px, transparent 1px)",
+            backgroundSize: "18px 18px",
+            opacity: 0.11,
+          }}
+        />
         <div className="mx-auto max-w-[480px] flex flex-col items-center text-center">
           <div className="fade-up h-32 w-32 rounded-full overflow-hidden ring-4 ring-accent shadow-sm bg-muted">
             <img src="/founder.jpg" alt="MD Al Amin" className="h-full w-full object-cover" />
