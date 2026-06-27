@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Megaphone, Globe, Bot, Share2, Search, PenTool, BarChart3, Zap } from "lucide-react";
+import { Megaphone, Globe, Bot, Share2, Search, PenTool } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
