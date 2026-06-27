@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Megaphone, Globe, Bot, Share2, Search, PenTool } from "lucide-react";
+import { Megaphone, Globe, Bot, Share2, Search, PenTool, BarChart3, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -57,7 +57,15 @@ function Index() {
   return (
     <main className="min-h-screen bg-background">
       {/* SECTION 1 — HERO */}
-      <section className="bg-background px-6 pt-12 pb-10">
+      <section className="relative bg-background px-6 pt-12 pb-10 overflow-hidden">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: "radial-gradient(circle, #2F85F3 1px, transparent 1px)",
+            backgroundSize: "18px 18px",
+            opacity: 0.11,
+          }}
+        />
         <div className="mx-auto max-w-[480px] flex flex-col items-center text-center">
           <div className="fade-up h-32 w-32 rounded-full overflow-hidden ring-4 ring-accent shadow-sm bg-muted">
             <img src="/founder.jpg" alt="MD Al Amin" className="h-full w-full object-cover" />
@@ -137,7 +145,26 @@ function Index() {
       <div className="h-2 w-full" style={{ backgroundColor: "#F5F7FA" }} />
 
       {/* SECTION 2 — COMPANY */}
-      <section className="px-6 py-12" style={{ backgroundColor: "#F5F7FA" }}>
+      <section className="relative px-6 py-12 overflow-hidden" style={{ backgroundColor: "#F5F7FA" }}>
+        {/* Floating decorative icons */}
+        <div className="absolute top-4 left-4 pointer-events-none" style={{ opacity: 0.07 }}>
+          <BarChart3 size={48} color="#00346D" aria-hidden="true" />
+        </div>
+        <div className="absolute top-12 right-6 pointer-events-none" style={{ opacity: 0.06 }}>
+          <Megaphone size={52} color="#2F85F3" aria-hidden="true" />
+        </div>
+        <div className="absolute bottom-32 left-6 pointer-events-none" style={{ opacity: 0.08 }}>
+          <Globe size={44} color="#00346D" aria-hidden="true" />
+        </div>
+        <div className="absolute top-1/3 right-4 pointer-events-none" style={{ opacity: 0.07 }}>
+          <Zap size={56} color="#2F85F3" aria-hidden="true" />
+        </div>
+        <div className="absolute bottom-1/4 right-8 pointer-events-none" style={{ opacity: 0.06 }}>
+          <Search size={40} color="#00346D" aria-hidden="true" />
+        </div>
+        <div className="absolute top-1/2 left-4 pointer-events-none" style={{ opacity: 0.07 }}>
+          <PenTool size={48} color="#2F85F3" aria-hidden="true" />
+        </div>
         <div className="mx-auto max-w-[480px]">
           <div className="flex flex-col items-center text-center">
             <div className="fade-up h-20 w-[11rem] rounded-2xl bg-white flex items-center justify-center p-3 border border-border">
